@@ -6,7 +6,7 @@ namespace robot_interface
 JointStateMultiThread::JointStateMultiThread()
 {
     joint_state_sub_ = nh_.subscribe("/robot/joint_states", 100, 
-      &JointStateMultiThread::joint_state_sub_cb_, this);
+        &JointStateMultiThread::joint_state_sub_cb_, this);
     joint_state_ser_ = nh_.advertiseService("/robot/joint_state_multi_thread", 
         &JointStateMultiThread::joint_state_ser_cb_, this);
 }
