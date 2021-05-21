@@ -1,4 +1,5 @@
 #include <robot_function/robot_function.h>
+#include <intera_core_msgs/JointCommand.h>
 
 namespace robot_function
 {
@@ -15,6 +16,9 @@ Robot::Robot()
 
     joint_state_cli_ = nh_.serviceClient<robot_core_msgs::JointStateMultiThread>(
         "/robot/joint_state_multi_thread");
+
+    joint_command_pub_ = nh_.advertise<intera_core_msgs::JointCommand>(
+        "/robot/limb/right/joint_command", 100);
 }
 
 Robot::~Robot(){}
@@ -109,6 +113,38 @@ int Robot::get_joint_efforts(std::vector<double> & efforts)
     }
 
     return 1;
+}
+
+void Robot::set_joint_positions(std::vector<double> & positions)
+{
+    intera_core_msgs::JointCommand cmd;
+    cmd.names.resize(dof_);
+    cmd.position.resize(dof_);
+
+    cmd.mode = cmd.POSITION_MODE;
+    for (unsigned int j=0; j<dof_; j++)
+    {
+        cmd.names[j] = joint_names[j];
+        cmd.position[j] = positions[j];
+    }
+
+    joint_command_pub_.publish(cmd);
+}
+
+void Robot::set_joint_efforts(std::vector<double> & efforts)
+{
+    intera_core_msgs::JointCommand cmd;
+    cmd.names.resize(dof_);
+    cmd.effort.resize(dof_);
+
+    cmd.mode = cmd.TORQUE_MODE;
+    for (unsigned int j=0; j<dof_; j++)
+    {
+        cmd.names[j] = joint_names[j];
+        cmd.effort[j] = efforts[j];
+    }
+
+    joint_command_pub_.publish(cmd);
 }
 
 }

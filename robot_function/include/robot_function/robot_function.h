@@ -21,6 +21,10 @@ public:
 
     int get_joint_efforts(std::vector<double> & efforts);
 
+    void set_joint_positions(std::vector<double> & positions);
+
+    void set_joint_efforts(std::vector<double> & efforts);
+
     const unsigned int dof_ = 7;
 
 private:
@@ -31,6 +35,8 @@ private:
     robot_core_msgs::JointStateMultiThread joint_state_;
 
     ros::ServiceClient joint_state_cli_;
+
+    ros::Publisher joint_command_pub_;
 
 };
 
